@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DNS Jantex</string>
+    <string name="vpn_service_desc">DNS Jantex local resolver for secure and low-latency gaming &amp; anti-sanction routing.</string>
+    <string name="vpn_connected_title">DNS Jantex is Active</string>
+    <string name="vpn_connected_msg">Routing DNS queries through %1$s</string>
+    <string name="action_disconnect">Disconnect</string>
+</resources>
