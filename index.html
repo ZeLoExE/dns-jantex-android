@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNS Jantex - Android Interactive Preview</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulseRing1 {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    @keyframes pulseRing2 {
+      0% { transform: scale(1); opacity: 0.4; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes breathingGlow {
+      0%, 100% { opacity: 0.4; transform: scale(0.98); }
+      50% { opacity: 0.9; transform: scale(1.02); }
+    }
+    .pulse-ring-1 {
+      animation: pulseRing1 2.2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+    }
+    .pulse-ring-2 {
+      animation: pulseRing2 2.2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite 0.7s;
+    }
+    .spin-slow {
+      animation: spinSlow 1.4s linear infinite;
+    }
+    .breathing-glow {
+      animation: breathingGlow 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#06090F] text-[#F1F5F9] font-sans min-h-screen flex items-center justify-center p-4 antialiased selection:bg-[#00F2FE] selection:text-black">
+
+  <!-- Phone Container Shell -->
+  <div class="relative w-[390px] h-[780px] bg-[#090D16] border-[4px] border-[#1E293B] rounded-[48px] shadow-2xl overflow-hidden flex flex-col justify-between select-none">
+    
+    <!-- Dynamic Island / Speaker Notch -->
+    <div class="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-5 bg-[#000000] rounded-full z-50 flex items-center justify-center">
+      <div class="w-3 h-3 bg-[#111] rounded-full mr-2"></div>
+      <div class="w-2 h-2 bg-[#00F2FE] opacity-60 rounded-full animate-ping"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="pt-4 px-6 flex justify-between items-center text-xs text-[#94A3B8] font-mono z-40">
+      <span>19:42</span>
+      <div class="flex items-center space-x-2">
+        <span class="text-[10px] text-[#00F5A0] font-bold">5G</span>
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <div class="px-6 pt-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="w-2.5 h-2.5 rounded-full bg-[#00F2FE] shadow-[0_0_10px_#00F2FE]"></div>
+        <span class="font-extrabold tracking-wider text-base text-white">DNS JANTEX</span>
+      </div>
+      <div class="px-2.5 py-1 rounded-md bg-[#162034] border border-[#233252] text-[11px] font-mono text-[#00F2FE]">
+        v4.0.2 Mobile
+      </div>
+    </div>
+
+    <!-- Scrollable Screen Content -->
+    <div class="px-6 flex-1 flex flex-col justify-around py-3">
+
+      <!-- 1. Top DNS Selector Card (User Requested: بالا بشه دی ان اس سلکت کرد) -->
+      <div id="dnsSelectorCard" onclick="openDrawer()" class="cursor-pointer group relative p-4 rounded-2xl bg-gradient-to-br from-[#16233B] to-[#0F1728] border border-[#233252] hover:border-[#00F2FE]/50 transition-all duration-300 shadow-lg">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center space-x-1.5">
+            <svg class="w-4 h-4 text-[#00F2FE]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <span class="text-[10px] font-bold tracking-wider text-[#4FACFE]">ACTIVE DNS PROFILE</span>
+          </div>
+          <!-- Quick Ping Indicator -->
+          <div id="quickPingBadge" onclick="event.stopPropagation(); runQuickPing();" class="flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-[#1A263D] border border-[#2A3B5C] text-xs font-mono text-[#00F5A0] hover:bg-[#223555]">
+            <span class="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse"></span>
+            <span id="quickPingText">24 ms</span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 id="currentDnsName" class="text-lg font-bold text-white tracking-wide">Shecan (شکن)</h3>
+            <p id="currentDnsIp" class="text-xs text-[#94A3B8] font-mono mt-0.5">178.22.122.100 • 185.51.200.2</p>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-[#1A263D] flex items-center justify-center text-[#00F2FE] group-hover:translate-y-0.5 transition-transform">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <div class="flex space-x-1.5 mt-3">
+          <span class="px-2 py-0.5 rounded text-[10px] bg-[#1E293B] text-[#93C5FD] font-medium">Bypass</span>
+          <span class="px-2 py-0.5 rounded text-[10px] bg-[#1E293B] text-[#93C5FD] font-medium">Anti-Sanction</span>
+        </div>
+      </div>
+
+      <!-- 2. Central VPN Circular Power Orb (User Requested: وسطش ی دایره باشه بزنم روش کانکت شه) -->
+      <div class="relative flex items-center justify-center py-4">
+        <!-- Concentric Sonar Pulses (Visible when connected) -->
+        <div id="pulse1" class="hidden absolute w-56 h-56 rounded-full border-2 border-[#00F5A0]/60 pulse-ring-1"></div>
+        <div id="pulse2" class="hidden absolute w-56 h-56 rounded-full border border-[#00F2FE]/40 pulse-ring-2"></div>
+
+        <!-- Connecting Rotating Orbit -->
+        <div id="orbitSpinner" class="hidden absolute w-48 h-48 rounded-full border-4 border-transparent border-t-[#00F2FE] border-r-[#00F5A0] spin-slow"></div>
+
+        <!-- Central Power Button -->
+        <button id="connectBtn" onclick="toggleConnection()" class="relative z-10 w-40 h-40 rounded-full bg-gradient-to-b from-[#16233B] to-[#0D1524] border-2 border-[#243557] shadow-xl flex flex-col items-center justify-center active:scale-95 transition-all duration-300 group">
+          <!-- Button Inner Glow -->
+          <div id="btnGlow" class="absolute inset-0 rounded-full bg-[#00F2FE]/5 group-hover:bg-[#00F2FE]/15 transition-all duration-300"></div>
+
+          <!-- Icon -->
+          <div id="powerIcon" class="text-[#4FACFE] transition-colors duration-300">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+
+          <!-- State Label -->
+          <span id="btnStatusText" class="mt-2 text-xs font-bold tracking-widest text-[#94A3B8] transition-colors duration-300">
+            TAP TO CONNECT
+          </span>
+
+          <!-- Session Duration Counter -->
+          <span id="btnTimer" class="hidden mt-0.5 text-xs font-mono font-bold text-[#00F5A0]">
+            00:00:00
+          </span>
+        </button>
+      </div>
+
+      <!-- 3. Metrics Telemetry HUD -->
+      <div class="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-[#111928] border border-[#1E293B] text-center">
+        <div>
+          <span class="block text-[10px] font-bold text-[#64748B] tracking-wider">LATENCY</span>
+          <span id="metricPing" class="text-sm font-bold font-mono text-[#00F5A0]">24 ms</span>
+        </div>
+        <div class="border-x border-[#1E293B]">
+          <span class="block text-[10px] font-bold text-[#64748B] tracking-wider">STATUS</span>
+          <span id="metricStatus" class="text-sm font-bold text-[#64748B]">Exposed</span>
+        </div>
+        <div onclick="runBenchmarkAll()" class="cursor-pointer hover:bg-[#1A263D] rounded-lg transition-colors p-0.5">
+          <span class="block text-[10px] font-bold text-[#00F2FE] tracking-wider">⚡ BENCHMARK</span>
+          <span class="text-xs font-semibold text-white">Ping All</span>
+        </div>
+      </div>
+
+      <!-- 4. Quick Actions (Auto Fastest & Flush Cache) -->
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="pickFastestDns()" class="p-3 rounded-xl bg-[#131E33] border border-[#203152] hover:border-[#00F2FE] text-left transition-all active:scale-95">
+          <div class="text-[#00F2FE] mb-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div class="text-xs font-bold text-white">Auto Fastest</div>
+          <div class="text-[10px] text-[#94A3B8]">Pick lowest ping</div>
+        </button>
+
+        <button onclick="flushDnsCache()" class="p-3 rounded-xl bg-[#131E33] border border-[#203152] hover:border-[#00F5A0] text-left transition-all active:scale-95">
+          <div class="text-[#00F5A0] mb-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </div>
+          <div class="text-xs font-bold text-white">Flush Cache</div>
+          <div class="text-[10px] text-[#94A3B8]">Purge resolver</div>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Android Bottom Navigation Bar Simulation -->
+    <div class="pb-2 pt-1 flex justify-center">
+      <div class="w-32 h-1 bg-[#475569] rounded-full"></div>
+    </div>
+
+    <!-- 5. DNS Selection Bottom Drawer (Modal Sheet) -->
+    <div id="drawerBackdrop" onclick="closeDrawer()" class="hidden absolute inset-0 bg-black/70 backdrop-blur-sm z-40 transition-opacity"></div>
+    
+    <div id="dnsDrawer" class="absolute bottom-0 left-0 right-0 max-h-[82%] bg-[#0F172A] border-t-2 border-[#203152] rounded-t-[32px] p-5 z-50 transform translate-y-full transition-transform duration-300 flex flex-col">
+      <div class="w-12 h-1 bg-[#334155] rounded-full mx-auto mb-4"></div>
+
+      <!-- Drawer Header -->
+      <div class="flex justify-between items-center mb-3">
+        <div>
+          <h2 class="text-base font-bold text-white">Select DNS Server</h2>
+          <p class="text-xs text-[#94A3B8]">Anti-sanction, Gaming & Global</p>
+        </div>
+        <button onclick="closeDrawer()" class="w-7 h-7 rounded-full bg-[#1E293B] text-white flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <!-- Drawer Search -->
+      <input type="text" id="searchInput" oninput="filterDnsList()" placeholder="Search DNS by name, IP, tag..." class="w-full px-3 py-2 bg-[#1E293B] border border-[#334155] rounded-xl text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#00F2FE] mb-3">
+
+      <!-- Scrollable DNS Server Items -->
+      <div id="dnsListContainer" class="flex-1 overflow-y-auto space-y-2 pr-1">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast" class="absolute top-16 left-6 right-6 p-3 rounded-xl bg-[#162034] border border-[#00F2FE] text-white text-xs font-medium text-center shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50">
+      Toast Message
+    </div>
+
+  </div>
+
+  <script>
+    // State
+    const dnsServers = [
+      { id: 'shecan', name: 'Shecan (شکن)', primary: '178.22.122.100', secondary: '185.51.200.2', tags: ['Bypass', 'Anti-Sanction'], ping: 24 },
+      { id: 'electro', name: 'Electro (الکترو)', primary: '78.157.42.101', secondary: '78.157.42.100', tags: ['Gaming', 'Bypass'], ping: 31 },
+      { id: 'radar', name: 'Radar Game (رادار گیم)', primary: '10.202.10.10', secondary: '10.202.10.11', tags: ['Gaming', 'Anti-Sanction'], ping: 18 },
+      { id: '403', name: '403 Online', primary: '10.202.10.202', secondary: '10.202.10.102', tags: ['Bypass', 'Dev'], ping: 22 },
+      { id: 'cloudflare', name: 'Cloudflare DNS', primary: '1.1.1.1', secondary: '1.0.0.1', tags: ['Global', 'Fast'], ping: 38 },
+      { id: 'google', name: 'Google Public DNS', primary: '8.8.8.8', secondary: '8.8.4.4', tags: ['Global', 'Reliable'], ping: 45 },
+      { id: 'adguard', name: 'AdGuard DNS', primary: '94.140.14.14', secondary: '94.140.15.15', tags: ['AdBlock', 'Privacy'], ping: 52 },
+      { id: 'quad9', name: 'Quad9', primary: '9.9.9.9', secondary: '149.112.112.112', tags: ['Security', 'Global'], ping: 65 }
+    ];
+
+    let currentDns = dnsServers[0];
+    let connectionState = 'DISCONNECTED'; // 'DISCONNECTED' | 'CONNECTING' | 'CONNECTED'
+    let timerInterval = null;
+    let secondsElapsed = 0;
+
+    function renderDnsList(list = dnsServers) {
+      const container = document.getElementById('dnsListContainer');
+      container.innerHTML = list.map(item => `
+        <div onclick="selectDns('${item.id}')" class="p-3 rounded-xl border ${item.id === currentDns.id ? 'bg-[#15233C] border-[#00F2FE]' : 'bg-[#131D30] border-[#1E293B]'} hover:border-[#00F2FE]/60 cursor-pointer flex justify-between items-center transition-all">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-white">${item.name}</span>
+              ${item.id === currentDns.id ? '<span class="text-[9px] px-1.5 py-0.2 rounded bg-[#00F2FE] text-black font-bold">ACTIVE</span>' : ''}
+            </div>
+            <div class="text-[10px] text-[#94A3B8] font-mono mt-0.5">${item.primary}</div>
+            <div class="flex space-x-1 mt-1">
+              ${item.tags.map(t => `<span class="text-[9px] px-1 rounded bg-[#1E293B] text-[#94A3B8]">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-mono font-bold ${item.ping < 30 ? 'text-[#00F5A0]' : item.ping < 60 ? 'text-[#FFD600]' : 'text-[#FF9100]'}">${item.ping} ms</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectDns(id) {
+      currentDns = dnsServers.find(d => d.id === id);
+      document.getElementById('currentDnsName').textContent = currentDns.name;
+      document.getElementById('currentDnsIp').textContent = `${currentDns.primary} • ${currentDns.secondary}`;
+      document.getElementById('quickPingText').textContent = `${currentDns.ping} ms`;
+      document.getElementById('metricPing').textContent = `${currentDns.ping} ms`;
+      renderDnsList();
+      closeDrawer();
+      showToast(`DNS Switched to ${currentDns.name}`);
+    }
+
+    function toggleConnection() {
+      if (connectionState === 'DISCONNECTED') {
+        // Start Connecting
+        connectionState = 'CONNECTING';
+        document.getElementById('orbitSpinner').classList.remove('hidden');
+        document.getElementById('btnStatusText').textContent = 'CONNECTING...';
+        document.getElementById('btnStatusText').classList.add('text-[#00F2FE]');
+        
+        setTimeout(() => {
+          connectionState = 'CONNECTED';
+          document.getElementById('orbitSpinner').classList.add('hidden');
+          document.getElementById('pulse1').classList.remove('hidden');
+          document.getElementById('pulse2').classList.remove('hidden');
+
+          // Styling Connected
+          const btn = document.getElementById('connectBtn');
+          btn.className = "relative z-10 w-40 h-40 rounded-full bg-gradient-to-b from-[#0F3E3B] to-[#082221] border-2 border-[#00F5A0] shadow-[0_0_30px_#00F5A0]/40 flex flex-col items-center justify-center active:scale-95 transition-all duration-300";
+          
+          document.getElementById('powerIcon').innerHTML = `<svg class="w-12 h-12 text-[#00F5A0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`;
+          document.getElementById('btnStatusText').textContent = 'CONNECTED';
+          document.getElementById('btnStatusText').className = 'mt-2 text-xs font-bold tracking-widest text-[#00F5A0]';
+          
+          document.getElementById('btnTimer').classList.remove('hidden');
+          document.getElementById('metricStatus').textContent = 'Protected';
+          document.getElementById('metricStatus').className = 'text-sm font-bold text-[#00F5A0]';
+
+          startTimer();
+          showToast(`Protected & routed via ${currentDns.name}`);
+        }, 1000);
+
+      } else {
+        // Disconnect
+        connectionState = 'DISCONNECTED';
+        clearInterval(timerInterval);
+        secondsElapsed = 0;
+        document.getElementById('btnTimer').textContent = '00:00:00';
+        document.getElementById('btnTimer').classList.add('hidden');
+        document.getElementById('pulse1').classList.add('hidden');
+        document.getElementById('pulse2').classList.add('hidden');
+        document.getElementById('orbitSpinner').classList.add('hidden');
+
+        const btn = document.getElementById('connectBtn');
+        btn.className = "relative z-10 w-40 h-40 rounded-full bg-gradient-to-b from-[#16233B] to-[#0D1524] border-2 border-[#243557] shadow-xl flex flex-col items-center justify-center active:scale-95 transition-all duration-300 group";
+
+        document.getElementById('powerIcon').innerHTML = `<svg class="w-12 h-12 text-[#4FACFE]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`;
+        document.getElementById('btnStatusText').textContent = 'TAP TO CONNECT';
+        document.getElementById('btnStatusText').className = 'mt-2 text-xs font-bold tracking-widest text-[#94A3B8]';
+
+        document.getElementById('metricStatus').textContent = 'Exposed';
+        document.getElementById('metricStatus').className = 'text-sm font-bold text-[#64748B]';
+
+        showToast('Disconnected from DNS tunnel');
+      }
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      secondsElapsed = 0;
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const hrs = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        document.getElementById('btnTimer').textContent = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function runQuickPing() {
+      document.getElementById('quickPingText').textContent = '...';
+      setTimeout(() => {
+        const simulatedPing = Math.floor(Math.random() * 20) + 15;
+        currentDns.ping = simulatedPing;
+        document.getElementById('quickPingText').textContent = `${simulatedPing} ms`;
+        document.getElementById('metricPing').textContent = `${simulatedPing} ms`;
+        showToast(`Ping: ${simulatedPing} ms (UDP 53)`);
+      }, 500);
+    }
+
+    function runBenchmarkAll() {
+      showToast('Benchmarking all DNS servers...');
+      setTimeout(() => {
+        dnsServers.forEach(d => {
+          d.ping = Math.floor(Math.random() * 40) + 14;
+        });
+        renderDnsList();
+        const fastest = [...dnsServers].sort((a,b) => a.ping - b.ping)[0];
+        showToast(`Fastest: ${fastest.name} (${fastest.ping} ms)`);
+      }, 800);
+    }
+
+    function pickFastestDns() {
+      runBenchmarkAll();
+      setTimeout(() => {
+        const fastest = [...dnsServers].sort((a,b) => a.ping - b.ping)[0];
+        selectDns(fastest.id);
+      }, 900);
+    }
+
+    function flushDnsCache() {
+      showToast('DNS Resolver Cache Purged & Flushed');
+    }
+
+    function openDrawer() {
+      document.getElementById('drawerBackdrop').classList.remove('hidden');
+      document.getElementById('dnsDrawer').classList.remove('translate-y-full');
+      renderDnsList();
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerBackdrop').classList.add('hidden');
+      document.getElementById('dnsDrawer').classList.add('translate-y-full');
+    }
+
+    function filterDnsList() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = dnsServers.filter(d => 
+        d.name.toLowerCase().includes(q) || 
+        d.primary.includes(q) || 
+        d.tags.some(t => t.toLowerCase().includes(q))
+      );
+      renderDnsList(filtered);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // Initialize list
+    renderDnsList();
+  </script>
+</body>
+</html>
