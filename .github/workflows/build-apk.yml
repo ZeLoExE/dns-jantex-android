@@ -1,0 +1,29 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Release APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - uses: android-actions/setup-android@v3
+      - run: chmod +x gradlew
+      - run: ./gradlew assembleDebug --no-daemon
+      - run: cp app/build/outputs/apk/debug/app-debug.apk DNS-Jantex-v4.0.2.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v4.0.2
+          name: "DNS Jantex Android v4.0.2"
+          files: DNS-Jantex-v4.0.2.apk
