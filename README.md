@@ -1,61 +1,76 @@
 # 🛡️ DNS Jantex - Android Edition (v4.0.2)
 
-> **Official Android Version of [DNS Jantex PC](https://github.com/ZeLoExE/dns-jantex)**  
-> Developed with modern **Native Kotlin**, **Jetpack Compose**, and Android **VpnService** API.
+<div align="center">
+
+[![Live Interactive Demo](https://img.shields.io/badge/📱%20Live%20Demo-Try%20In%20Browser-00F2FE?style=for-the-badge)](https://zeloexe.github.io/dns-jantex-android/)
+[![Download APK](https://img.shields.io/badge/📥%20Download%20APK-v4.0.2%20Release-00F5A0?style=for-the-badge)](https://github.com/ZeLoExE/dns-jantex-android/releases)
+[![Platform](https://img.shields.io/badge/Platform-Android%207.0%2B-blue?style=for-the-badge&logo=android)](https://github.com/ZeLoExE/dns-jantex-android)
+
+<br/>
+
+> **The modern Android counterpart to [DNS Jantex PC](https://github.com/ZeLoExE/dns-jantex).**  
+> Engineered with **Kotlin**, **Jetpack Compose**, and Android **VpnService** API for seamless, non-root DNS switching and gaming / anti-sanction acceleration.
+
+</div>
+
+---
+
+### 🌐 [👉 Click Here to Test Live Interactive Mobile Simulator](https://zeloexe.github.io/dns-jantex-android/)
+You can test the exact UI, animated central connect orb, sonar ripples, live timer, and DNS switcher directly in your phone or PC browser!
 
 ---
 
 ## ✨ Features & Architecture
 
-- **🔘 VPN-Style Central Connect Orb**:
-  - Immersive cybernetic aesthetic with dynamic multi-ring sonar pulses.
-  - Orbiting particle sweep during connection.
-  - Real-time session uptime counter (`00:12:45`).
-  - Haptic feedback on tap.
+### 🔘 1. VPN-Style Central Connect Orb
+- **Dynamic Multi-Ring Sonar Waves:** Expanding pulse rings radiating when connected.
+- **Orbital Sweep:** Rotating cyan/emerald orbit spinner during handshake.
+- **Live Session Uptime:** Microsecond accurate ticker (`00:14:32`).
+- **Tactile Haptic Pulses:** Smooth subtle vibration upon toggling.
 
-- **⚡ Top DNS Profile Selector**:
-  - Quick-switch card located at the top of the dashboard.
-  - Real-time RFC 1035 UDP DNS ping latency benchmark.
-  - Preloaded with the top Iranian Anti-Sanction & Gaming DNS profiles (`Shecan`, `Electro`, `Radar Game`, `403 Online`) alongside top global resolvers (`Cloudflare`, `Google`, `AdGuard`, `Quad9`, `Control D`, `OpenDNS`).
+### ⚡ 2. Top DNS Profile Selector
+- **One-Tap Quick Switch Card:** Positioned at the top of the dashboard.
+- **Real-Time RFC 1035 UDP Port 53 Latency:** Real query benchmark against `google.com`.
+- **Preconfigured Resolvers:**
+  - 🇮🇷 **Shecan (شکن):** `178.22.122.100` / `185.51.200.2` (Anti-Sanction & Bypass)
+  - 🎮 **Electro (الکترو):** `78.157.42.101` / `78.157.42.100` (Gaming & Bypass)
+  - 🚀 **Radar Game (رادار گیم):** `10.202.10.10` / `10.202.10.11` (Gaming Low Ping)
+  - 💻 **403 Online:** `10.202.10.202` / `10.202.10.102` (Dev & Bypass)
+  - 🌍 **Cloudflare DNS:** `1.1.1.1` / `1.0.0.1` (Fast & Privacy)
+  - 🌐 **Google Public DNS:** `8.8.8.8` / `8.8.4.4` (Reliable Global)
+  - 🛡️ **AdGuard DNS:** `94.140.14.14` / `94.140.15.15` (AdBlock & Privacy)
+  - 🔒 **Quad9, OpenDNS, Control D** + Unlimited Custom DNS support.
 
-- **📊 High-Performance Ping Benchmark**:
-  - Concurrent bulk DNS latency tester powered by Kotlin Coroutines (`Dispatchers.IO`).
-  - **Auto-Fastest Mode**: Automatically detects and connects to the resolver with the lowest ping.
+### 📊 3. High-Speed Ping Benchmark
+- **Concurrent Bulk Ping:** Coroutines test all DNS servers simultaneously in under 1 second.
+- **Auto-Fastest Mode:** Automatically routes through the lowest-latency DNS server.
 
-- **➕ Custom DNS Servers**:
-  - Add, save, and delete custom DNS configurations with name, IP address, and tags.
-  - Persistent storage using local encrypted preferences.
-
-- **🔒 Native Android VpnService**:
-  - 100% Non-root requirement.
-  - Direct local TUN interface routing DNS queries (port 53) to target resolvers.
-  - Foreground service with notification controls and quick disconnect button.
+### 🔒 4. 100% Non-Root Android VpnService
+- Creates a local TUN interface that only routes DNS (port 53 UDP) without touching regular data or slowing down your connection.
+- Foreground service with notification controls and one-click Disconnect.
 
 ---
 
-## 🚀 How to Run & Build
+## 📥 Download & Install
 
-### Option 1: Android Studio (Recommended)
-1. Open **Android Studio** (Hedgehog, Iguana, Jellyfish, or newer).
-2. Select **Open** and choose the `dns-jantex-android` folder on your Desktop.
-3. Wait for Gradle Sync to complete.
-4. Connect your Android device or start an emulator.
-5. Click the green **Run (▶)** button!
+Download the latest compiled APK from the **[Releases](https://github.com/ZeLoExE/dns-jantex-android/releases)** page and install it on your device.
 
-### Option 2: Build APK via Command Line
+---
+
+## 🛠️ Build from Source
+
+### Android Studio:
+1. Open Android Studio.
+2. Select **Open** and choose this project folder.
+3. Click **Run (▶)** to deploy to an emulator or connected phone.
+
+### Command Line:
 ```bash
-cd dns-jantex-android
 ./gradlew assembleDebug
 ```
-The compiled APK will be located at:
-`app/build/outputs/apk/debug/app-debug.apk`
 
 ---
 
-## 🎨 UI/UX Design Palette
-- **Obsidian Dark Surface**: `#090D16` / `#101726`
-- **Neon Electric Cyan**: `#00F2FE`
-- **Emerald Pulse**: `#00F5A0`
-- **Card Glass**: `#162034` with subtle radial lighting
-
-Designed & Architected by **ZeLoExE** & Antigravity.
+<div align="center">
+Developed with ❤️ by <a href="https://github.com/ZeLoExE">ZeLoExE</a> & Antigravity.
+</div>
