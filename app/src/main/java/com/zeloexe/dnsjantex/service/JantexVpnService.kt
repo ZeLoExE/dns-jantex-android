@@ -159,7 +159,7 @@ class JantexVpnService : VpnService() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle("DNS Jantex: Active")
             .setContentText("Protected & routed via $dnsName ($primaryIp)")
             .setOngoing(true)

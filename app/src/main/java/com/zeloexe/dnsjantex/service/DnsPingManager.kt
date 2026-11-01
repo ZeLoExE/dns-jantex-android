@@ -66,7 +66,7 @@ object DnsPingManager {
         if (trimmedIp.isEmpty()) return@withContext -1L
 
         var socket: DatagramSocket? = null
-        try {
+        val result: Long = try {
             val address = InetAddress.getByName(trimmedIp)
             socket = DatagramSocket().apply {
                 soTimeout = timeoutMs
@@ -82,6 +82,7 @@ object DnsPingManager {
             val recvBuffer = ByteArray(512)
             val recvPacket = DatagramPacket(recvBuffer, recvBuffer.size)
 
+            var rtt = -1L
             while (true) {
                 socket.receive(recvPacket)
                 val durationMs = (System.nanoTime() - startTime) / 1_000_000
@@ -89,15 +90,18 @@ object DnsPingManager {
                 if (recvPacket.length >= 12 && recvPacket.address == address) {
                     val respTxId = (((recvBuffer[0].toInt() and 0xFF) shl 8) or (recvBuffer[1].toInt() and 0xFF)).toShort()
                     if (respTxId == txId) {
-                        return@withContext durationMs.coerceAtLeast(1L)
+                        rtt = durationMs.coerceAtLeast(1L)
+                        break
                     }
                 }
             }
+            rtt
         } catch (e: Exception) {
             -1L
         } finally {
             socket?.close()
         }
+        return@withContext result
     }
 
     /**
